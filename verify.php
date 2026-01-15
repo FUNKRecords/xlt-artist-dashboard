@@ -4,8 +4,8 @@ $data = json_decode(file_get_contents("php://input"), true);
 $orderID = $data['orderID'];
 
 // PAYPAL API VERIFY
-$clientId = "ATsTDg8o88cVJJL5YPUCzySw_F_NeVAqCclxW17v8jvxiUoUiQjwck8vM4ZxrxYhuLV0apKT4Vru7uV2";
-$secret = "EG-RN4MWmdEW8wCkj-fEdNNSeccJfNcO4-ys96gdANb7z1EhW1orWfApN1TjCW43o44FWuOCmxUEXdyT";
+$clientId = "xxx";
+$secret = "xxx";
 
 $ch = curl_init();
 
