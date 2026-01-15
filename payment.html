@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro Plan Payment – X.L.T Records</title>
+  <title>Pro Plan Payment – FUNK Records</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -59,23 +59,41 @@
     <button id="payBtn">Pay with Card</button>
   </div>
 
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX"); // Replace with your real Stripe public key
+  <script src="https://www.paypal.com/sdk/js?client-id=ATsTDg8o88cVJJL5YPUCzySw_F_NeVAqCclxW17v8jvxiUoUiQjwck8vM4ZxrxYhuLV0apKT4Vru7uV2&currency=USD"></script>
 
-    document.getElementById("payBtn").addEventListener("click", async () => {
-      // Simulate a checkout session for demo
-      const sessionId = "demo_test_session_id"; // You will replace this via your backend
+<div id="paypal-button-container"></div>
 
-      // Example redirect (simulate checkout for now)
-      alert("Payment successful (demo mode). You’ll now create your account.");
-      window.location.href = "signup.html?plan=pro";
-
-      // Real Stripe checkout example (requires backend API call to create session):
-      // const response = await fetch("/create-checkout-session", { method: "POST" });
-      // const session = await response.json();
-      // stripe.redirectToCheckout({ sessionId: session.id });
+<script>
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: "19.00"
+        }
+      }]
     });
-  </script>
-</body>
-</html>
+  },
+
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+
+      // Payment confirmed
+      fetch("verify.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderID: data.orderID,
+          email: details.payer.email_address
+        })
+      }).then(res => res.json())
+      .then(data => {
+        if(data.status === "success"){
+          window.location.href = "signup.html?plan=pro";
+        }
+      });
+
+    });
+  }
+}).render('#paypal-button-container');
+</script>
